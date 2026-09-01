@@ -1,4 +1,5 @@
 # Google Colab で実装したもの。これを元にChat-GPTで生成したWebページが calc_accel.html
+# その後も機能追加したりしてるので、完全に同じ処理ではない
 
 # @title 計算機
 
