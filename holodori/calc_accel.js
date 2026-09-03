@@ -6,6 +6,24 @@
  */
 
 const holomems = ["ときのそら", "ロボ子さん", "AZKi", "さくらみこ", "星街すいせい", "アキ・ローゼンタール", "赤井はあと", "白上フブキ", "夏色まつり", "百鬼あやめ", "癒月ちょこ", "大空スバル", "大神ミオ", "猫又おかゆ", "戌神ころね", "兎田ぺこら", "不知火フレア", "白銀ノエル", "宝鐘マリン", "角巻わため", "常闇トワ", "姫森ルーナ", "雪花ラミィ", "桃鈴ねね", "獅白ぼたん", "尾丸ポルカ", "ラプラス・ダークネス", "鷹嶺ルイ", "博衣こより", "風真いろは", "アユンダ・リス", "ムーナ・ホシノヴァ", "アイラニ・イオフィフティーン", "クレージー・オリー", "アーニャ・メルフィッサ", "パヴォリア・レイネ", "ベスティア・ゼータ", "カエラ・コヴァルスキア", "こぼ・かなえる", "森カリオペ", "小鳥遊キアラ", "一伊那尓栖", "IRyS", "オーロ・クロニー", "ハコス・ベールズ", "シオリ・ノヴェラ", "古石ビジュー", "ネリッサ・レイヴンクロフト", "フワワ・アビスガード", "モココ・アビスガード", "音乃瀬奏", "一条莉々華", "儒烏風亭らでん", "轟はじめ"];
+const namedata = { "ときのそら": "そら", "ロボ子さん": "ロボ子さん", "AZKi": "AZKi", "さくらみこ": "みこ", "星街すいせい": "すいせい", "アキ・ローゼンタール": "アキ", "赤井はあと": "はあと", "白上フブキ": "フブキ", "夏色まつり": "まつり", "百鬼あやめ": "あやめ", "癒月ちょこ": "ちょこ", "大空スバル": "スバル", "大神ミオ": "ミオ", "猫又おかゆ": "おかゆ", "戌神ころね": "ころね", "兎田ぺこら": "ぺこら", "不知火フレア": "フレア", "白銀ノエル": "ノエル", "宝鐘マリン": "マリン", "角巻わため": "わため", "常闇トワ": "トワ", "姫森ルーナ": "ルーナ", "雪花ラミィ": "ラミィ", "桃鈴ねね": "ねね", "獅白ぼたん": "ぼたん", "尾丸ポルカ": "ポルカ", "ラプラス・ダークネス": "ラプラス", "鷹嶺ルイ": "ルイ", "博衣こより": "こより", "風真いろは": "いろは", "アユンダ・リス": "リス", "ムーナ・ホシノヴァ": "ムーナ", "アイラニ・イオフィフティーン": "イオフィ", "クレージー・オリー": "オリー", "アーニャ・メルフィッサ": "アーニャ", "パヴォリア・レイネ": "レイネ", "ベスティア・ゼータ": "ゼータ", "カエラ・コヴァルスキア": "カエラ", "こぼ・かなえる": "こぼ", "森カリオペ": "カリオペ", "小鳥遊キアラ": "キアラ", "一伊那尓栖": "伊那尓栖", "IRyS": "IRyS", "オーロ・クロニー": "クロニー", "ハコス・ベールズ": "ベールズ", "シオリ・ノヴェラ": "シオリ", "古石ビジュー": "ビジュー", "ネリッサ・レイヴンクロフト": "ネリッサ", "フワワ・アビスガード": "フワワ", "モココ・アビスガード": "モココ", "音乃瀬奏": "奏", "一条莉々華": "莉々華", "儒烏風亭らでん": "らでん", "轟はじめ": "はじめ" };
+
+function getShortName(name) {
+  return namedata[name] || name;
+}
+
+function updateMemberLabels() {
+  for (let i = 0; i < 5; i++) {
+    const name = document.getElementById(`member${i}_name`).value;
+    const shortName = getShortName(name);
+
+    document.getElementById(`limitLabel${i}`).textContent =
+      shortName;
+
+    document.getElementById(`kaihouLabel${i}`).textContent =
+      shortName;
+  }
+}
 
 const STORAGE_KEY = "holodream_accel_inputs";
 
@@ -14,9 +32,10 @@ const inputIds = [
   ...Array.from({ length: 5 }, (_, i) => [
     `member${i}_name`,
     `member${i}_cooldown`,
+    `member${i}_prob`,
     `member${i}_duration`,
     `member${i}_rate`,
-    `member${i}_limit`
+    `limit${i}`
   ]).flat(),
   "overallLimit",
   "priority",
@@ -97,6 +116,14 @@ for (let i = 0; i < 5; i++) {
       </div>
 
       <div class="field">
+        <label for="member${i}_prob">発動率</label>
+        <select id="member${i}_prob">
+          <option value="中確率">中確率</option>
+          <option value="高確率">高確率</option>
+        </select>
+      </div>
+
+      <div class="field">
         <label for="member${i}_duration">持続時間（秒）</label>
         <input id="member${i}_duration" type="number"
                min="1" step="any" value="10">
@@ -105,13 +132,7 @@ for (let i = 0; i < 5; i++) {
       <div class="field">
         <label for="member${i}_rate">上昇率（%）</label>
         <input id="member${i}_rate" type="number"
-               min="0" step="1" value="150">
-      </div>
-
-      <div class="field">
-        <label for="member${i}_limit">解放上限</label>
-        <input id="member${i}_limit" type="number"
-               min="0" step="1" value="3">
+               min="0" max="1000" step="1" value="150">
       </div>
     </div>
   `;
@@ -119,8 +140,16 @@ for (let i = 0; i < 5; i++) {
   membersElement.appendChild(card);
 }
 
+for (let i = 0; i < 5; i++) {
+  document
+    .getElementById(`member${i}_name`)
+    .addEventListener("change", updateMemberLabels);
+}
+
 // 前回の入力値を復元
 restoreInputs();
+
+updateMemberLabels();
 
 // 入力値が変更されたら自動保存
 for (const id of inputIds) {
@@ -138,6 +167,7 @@ for (const id of inputIds) {
   }
 }
 
+// リザルトを表示する部分
 function displayResult(result) {
   const resultElement = document.getElementById("result");
   const releaseSettings = document.getElementById("releaseSettings");
@@ -231,7 +261,6 @@ function drawTimeline(result) {
   ctx.setLineDash([]);
 
   // 行ラベル
-  const namedata = { "ときのそら": "そら", "ロボ子さん": "ロボ子さん", "AZKi": "アズキ", "さくらみこ": "みこ", "星街すいせい": "すいせい", "アキ・ローゼンタール": "アキ", "赤井はあと": "はあと", "白上フブキ": "フブキ", "夏色まつり": "まつり", "百鬼あやめ": "あやめ", "癒月ちょこ": "ちょこ", "大空スバル": "スバル", "大神ミオ": "ミオ", "猫又おかゆ": "おかゆ", "戌神ころね": "ころね", "兎田ぺこら": "ぺこら", "不知火フレア": "フレア", "白銀ノエル": "ノエル", "宝鐘マリン": "マリン", "角巻わため": "わため", "常闇トワ": "トワ", "姫森ルーナ": "ルーナ", "雪花ラミィ": "ラミィ", "桃鈴ねね": "ねね", "獅白ぼたん": "ぼたん", "尾丸ポルカ": "ポルカ", "ラプラス・ダークネス": "ラプラス", "鷹嶺ルイ": "ルイ", "博衣こより": "こより", "風真いろは": "いろは", "アユンダ・リス": "リス", "ムーナ・ホシノヴァ": "ムーナ", "アイラニ・イオフィフティーン": "イオフィ", "クレージー・オリー": "オリー", "アーニャ・メルフィッサ": "アーニャ", "パヴォリア・レイネ": "レイネ", "ベスティア・ゼータ": "ゼータ", "カエラ・コヴァルスキア": "カエラ", "こぼ・かなえる": "こぼ", "森カリオペ": "カリオペ", "小鳥遊キアラ": "キアラ", "一伊那尓栖": "伊那尓栖", "IRyS": "アイリス", "オーロ・クロニー": "クロニー", "ハコス・ベールズ": "ベールズ", "シオリ・ノヴェラ": "シオリ", "古石ビジュー": "ビジュー", "ネリッサ・レイヴンクロフト": "ネリッサ", "フワワ・アビスガード": "フワワ", "モココ・アビスガード": "モココ", "音乃瀬奏": "奏", "一条莉々華": "莉々華", "儒烏風亭らでん": "らでん", "轟はじめ": "はじめ" };
   ctx.fillStyle = "#333";
   ctx.font = "13px sans-serif";
   ctx.textAlign = "right";
@@ -381,8 +410,9 @@ function calculate(members, overallLimit, startTime, endTime, priority, userKaih
   }
 
   for (const kaihou of kaihouCandidates) {
-    // 以下は既存の処理をそのまま
     const cooldowns = members.map((m, i) => m.cooldown / (1 + kaihou[i] * 0.04));
+
+    // スキルの発動・終了をまとめる
     const skillEvents = [];
     for (let i = 0; i < 5; i++) {
       const cd = cooldowns[i], dur = members[i].duration;
@@ -479,7 +509,6 @@ function calculate(members, overallLimit, startTime, endTime, priority, userKaih
         }
       }
 
-      // 以下は既存の処理
       if (events[events.length - 1][0] === t) events[events.length - 1] = [t, curi];
       else events.push([t, curi]);
       prevEventTime = t;
@@ -572,7 +601,7 @@ document.getElementById("calculateButton").addEventListener("click", () => {
       const cooldown = Number(document.getElementById(`member${i}_cooldown`).value);
       const duration = Number(document.getElementById(`member${i}_duration`).value);
       const rate = Number(document.getElementById(`member${i}_rate`).value);
-      const limit = Number(document.getElementById(`member${i}_limit`).value);
+      const limit = Number(document.getElementById(`limit${i}`).value);
       if (cooldown <= 0) throw new Error(`${i + 1} 人目 ${name}：発動間隔 を 0 より大きくしてください`);
       if (duration <= 0) throw new Error(`${i + 1} 人目 ${name}：持続時間 を 0 より大きくしてください`);
       if (rate < 0) throw new Error(`${i + 1} 人目 ${name}：上昇率 を 0 以上にしてください`);

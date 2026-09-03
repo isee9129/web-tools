@@ -18,7 +18,6 @@
   <h1>ホロドリ アクティブスキル発動頻度 計算機</h1>
   <div class="description">
     現在の編成について、各ホロメンボードの「アクティブスキル発動頻度」をどの程度解放すればいいか計算します。<br>
-    全て発動するものとして計算するので、頑張って全て発動させましょう。<br>
   </div>
 
   <h2>編成の設定</h2>
@@ -27,20 +26,21 @@
     <li><strong>名前</strong>：ホロメンの名前を選択してください。なお、発動間隔などのデータは<strong>自動では入りません</strong></li>
     <!-- データを入れると新規メンバーが実装される度にデータも追加するという管理コストが発生するため、最初からデータは入れないことにしました。 -->
     <li><strong>発動間隔</strong>：アクティブスキル「○○秒毎に」の部分の数値を入れてください</li>
+    <li><strong>発動率</strong>：アクティブスキル「○確率で」の部分の情報を入れてください</li>
     <li><strong>持続時間</strong>：アクティブスキル「○○秒間」の部分の数値を入れてください</li>
     <li><strong>上昇率</strong>：アクティブスキル「○○%UP」の部分の数値を入れてください。ホロメンボードやパッシブスキルの効果も反映させておくとより正確に計算できます</li>
-    <li><strong>解放数上限</strong>：ホロメンボードで「アクティブスキル発動頻度」を何個まで解放できるか設定してください（ボードPtが不足してる方向け）</li>
   </ul>
 
   <div class="members" id="members"></div>
 
   <h2>全体の設定</h2>
-
+  
   <ul class="help">
-
-    <li><strong>全体の解放数上限</strong>：全体で「アクティブスキル発動頻度」を合計何個まで解放できるか設定してください（ブルーキューブ・ブルーコアキューブが不足してる方向け）</li>
+    
     <li><strong>開始時刻・終了時刻</strong>：アクティブスキルを発動させたい時間を設定してください</li>
-    <li><strong>解放数</strong>：「アクティブスキル発動頻度」をいくつ解放するか、計算方法を選択してください
+    <li><strong>解放数上限 - 全体</strong>：全体で「アクティブスキル発動頻度」を合計何個まで解放できるか設定してください（ブルーキューブ・ブルーコアキューブが不足してる方向け）</li>
+    <li><strong>解放数上限 - 個別</strong>：それぞれのホロメンボードで「アクティブスキル発動頻度」を何個まで解放できるか設定してください（ボードPtが不足してる方向け）</li>
+    <li><strong>計算基準</strong>：「アクティブスキル発動頻度」をいくつ解放するか、計算方法を選択してください
       <ul>
         <li><strong>発動時間重視</strong>：より多くの時間でアクティブスキルが発動するような設定にします。スペシャルスキルが無駄になりにくく、汎用性が高いです</li>
         <li><strong>上昇率重視</strong>：アクティブスキルの効果量が高くなるような設定にします。スペシャルスキルの発動タイミングによっては悪化する可能性もあります</li>
@@ -48,33 +48,64 @@
       </ul>
     </li>
   </ul>
-
-
+  
   <div class="card">
     <div class="field-grid">
       <div class="field">
-        <label for="overallLimit">全体の解放数上限</label>
-        <input id="overallLimit" type="number" min="0" step="1" value="15">
-      </div>
-
-      <div class="field">
-      </div>
-
-      <div class="field">
         <label for="startTime">開始時刻（秒）</label>
-        <input id="startTime" type="number" min="0" step="any" value="10">
+        <input id="startTime" type="number" min="0" max="1000" step="any" value="10">
       </div>
-
+    
       <div class="field">
         <label for="endTime">終了時刻（秒）</label>
-        <input id="endTime" type="number" min="0" step="any" value="130">
+        <input id="endTime" type="number" min="0" max="1000" step="any" value="130">
       </div>
 
       <div class="field">
-        <label for="priority">解放数</label>
+        <label for="overallLimit">解放数上限 - 全体</label>
+        <input id="overallLimit" type="number" min="0" max="1000" step="1" value="15">
+
+        <div id="limitSettings" class="limit-settings">
+          <label>解放数上限 - 個別</label>
+    
+          <div class="kaihou-grid">
+            <div class="field">
+              <label id="limitLabel0" for="limit0">1人目</label>
+              <input id="limit0" type="number" min="0" max="1000" step="1" value="3">
+            </div>
+    
+            <div class="field">
+              <label id="limitLabel1" for="limit1">2人目</label>
+              <input id="limit1" type="number" min="0" max="1000" step="1" value="3">
+            </div>
+    
+            <div class="field">
+              <label id="limitLabel2" for="limit2">3人目</label>
+              <input id="limit2" type="number" min="0" max="1000" step="1" value="3">
+            </div>
+    
+            <div class="field">
+              <label id="limitLabel3" for="limit3">4人目</label>
+              <input id="limit3" type="number" min="0" max="1000" step="1" value="3">
+            </div>
+    
+            <div class="field">
+              <label id="limitLabel4" for="limit4">5人目</label>
+              <input id="limit4" type="number" min="0" max="1000" step="1" value="3">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field">
+      </div>
+
+      <div class="field">
+        <label for="priority">計算基準</label>
         <select id="priority">
-          <option value="time">発動時間重視</option>
-          <option value="rate">上昇率重視</option>
+          <option value="time">発動時間</option>
+          <option value="rate">合計上昇率</option>
+          <option value="expect">期待値</option>
           <option value="user">ユーザー指定</option>
         </select>
 
@@ -83,28 +114,28 @@
 
           <div class="kaihou-grid">
             <div class="field">
-              <label for="kaihou0">1人目</label>
-              <input id="kaihou0" type="number" min="0" step="1" value="0">
+              <label id="kaihouLabel0" for="kaihou0">1人目</label>
+              <input id="kaihou0" type="number" min="0" max="1000" step="1" value="0">
             </div>
 
             <div class="field">
-              <label for="kaihou1">2人目</label>
-              <input id="kaihou1" type="number" min="0" step="1" value="0">
+              <label id="kaihouLabel1" for="kaihou1">2人目</label>
+              <input id="kaihou1" type="number" min="0" max="1000" step="1" value="0">
             </div>
 
             <div class="field">
-              <label for="kaihou2">3人目</label>
-              <input id="kaihou2" type="number" min="0" step="1" value="0">
+              <label id="kaihouLabel2" for="kaihou2">3人目</label>
+              <input id="kaihou2" type="number" min="0" max="1000" step="1" value="0">
             </div>
 
             <div class="field">
-              <label for="kaihou3">4人目</label>
-              <input id="kaihou3" type="number" min="0" step="1" value="0">
+              <label id="kaihouLabel3" for="kaihou3">4人目</label>
+              <input id="kaihou3" type="number" min="0" max="1000" step="1" value="0">
             </div>
 
             <div class="field">
-              <label for="kaihou4">5人目</label>
-              <input id="kaihou4" type="number" min="0" step="1" value="0">
+              <label id="kaihouLabel4" for="kaihou4">5人目</label>
+              <input id="kaihou4" type="number" min="0" max="1000" step="1" value="0">
             </div>
           </div>
         </div>
